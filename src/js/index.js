@@ -20,7 +20,7 @@ const fetchData = async url => {
 	return data;
 };
 
-// funcion para recoger la lista de razs de perros y pintarlas
+// funcion para recoger la lista de razas de perros y pintarlas
 const getAllDogs = async () => {
 	const data = await fetchData(`https://dog.ceo/api/breeds/list/all`);
 
@@ -109,6 +109,7 @@ const printFavoriteDogs = favoriteDogs => {
 
 // guardar imagenes en el localstorage
 const saveImg = () => {
+	if (urlImages.includes(urlImg)) return;
 	urlImages.push(urlImg);
 	LS.setItem('imagenes', JSON.stringify(urlImages));
 	const favoriteDogs = JSON.parse(LS.getItem('imagenes'));
@@ -124,7 +125,23 @@ const deleteImage = event => {
 
 	event.target.parentNode.remove();
 	console.log(urlImages);
+
+	LS.setItem('imagenes', JSON.stringify(urlImages));
 };
+const readLS = () => {
+	const images = JSON.parse(LS.getItem('imagenes'));
+	console.log(images);
+	if (images.length > 0) {
+		urlImages = images;
+
+		printFavoriteDogs(urlImages);
+	} else {
+		urlImages = [];
+		LS.setItem('imagenes', JSON.stringify(urlImages));
+	}
+};
+
+readLS();
 
 dogRaceElement.addEventListener('change', selectRace);
 dogSubRaceElement.addEventListener('change', selectSubRace);
